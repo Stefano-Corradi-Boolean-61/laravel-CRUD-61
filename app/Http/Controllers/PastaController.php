@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PastaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Pasta;
@@ -36,15 +37,12 @@ class PastaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PastaRequest $request)
     {
+        // la validazione avviene in PastaRequest
         // questo metodo riceve in post dalla rotta pastas.store tutti gli elementi del form presenti in create
         //dd($request->all());
 
-        // controllo la validità dei dati
-
-        // $request->validate accetta come primo parametro l'array dei controlli e come secondo l'array dei messaggi di errore custom
-        $request->validate( $this->validateRules(), $this->validateMessages());
 
         // salvo in $data tutta la nostra request
         $data = $request->all();
@@ -112,12 +110,12 @@ class PastaController extends Controller
 
     // passando $pasta e non $id come secondo parametro otteniamo l'ggetto della query ad db
     // quindi laravel dietro le quinte esegue $pasta = Pasta::find($id);
-    public function update(Request $request, Pasta $pasta)
+    public function update(PastaRequest $request, Pasta $pasta)
     {
+        // la validazione avviene in PastaRequest
         // modalità in cui passo $id e non $pasta
         //$pasta = Pasta::find($id);
-        // validazione dei dati inseriti
-        $request->validate( $this->validateRules(), $this->validateMessages());
+
 
         //dd($request->all(),$id);
         //....
@@ -166,28 +164,6 @@ class PastaController extends Controller
         return $slug;
     }
 
-    private function validateRules(){
-        return [
-            'name' => 'required|max:50|min:3',
-            'image' => 'required|max:255|min:10',
-            'type' => 'required|max:50|min:3',
-            'description' => 'min:10'
-        ];
-    }
 
-    private function validateMessages(){
-        return [
-            'name.required' => 'Il campo nome è obbligatorio',
-            'name.max' => 'Il campo nome deve avere al massimo :max caratteri',
-            'name.min' => 'Il campo nome deve avere minimo :min caratteri',
-            'image.required' => 'Il campo Url immaigne è obbligatorio',
-            'image.max' => 'Il campo Url immaigne deve avere al massimo :max caratteri',
-            'image.min' => 'Il campo Url immaigne deve avere minimo :min caratteri',
-            'type.required' => 'Il campo tipo nome è obbligatorio',
-            'type.max' => 'Il campo tipo deve avere al massimo :max caratteri',
-            'type.min' => 'Il campo tipo deve avere minimo :min caratteri',
-            'description.min' => 'Il descrizione nome deve avere minimo :min caratteri',
-        ];
-    }
 
 }
