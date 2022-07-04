@@ -40,10 +40,16 @@ class PastaController extends Controller
     {
         // questo metodo riceve in post dalla rotta pastas.store tutti gli elementi del form presenti in create
         //dd($request->all());
+
+        // controllo la validità dei dati
+
+        // $request->validate accetta come primo parametro l'array dei controlli e come secondo l'array dei messaggi di errore custom
+        $request->validate( $this->validateRules(), $this->validateMessages());
+
         // salvo in $data tutta la nostra request
         $data = $request->all();
 
-        // controllo la validità dei dati
+
         // salvo i dati nel DB
         // creo una nuova pasta alla quale associo i dati della request per salvarli nel db
         $new_pasta = new Pasta();
@@ -110,9 +116,10 @@ class PastaController extends Controller
     {
         // modalità in cui passo $id e non $pasta
         //$pasta = Pasta::find($id);
+        // validazione dei dati inseriti
+        $request->validate( $this->validateRules(), $this->validateMessages());
 
         //dd($request->all(),$id);
-        // validazione dei dati inseriti
         //....
         // salvo la request in data
         $data = $request->all();
@@ -157,6 +164,30 @@ class PastaController extends Controller
             $slug = $control_slug->slug . "-" . rand(1000,10000);
         }
         return $slug;
+    }
+
+    private function validateRules(){
+        return [
+            'name' => 'required|max:50|min:3',
+            'image' => 'required|max:255|min:10',
+            'type' => 'required|max:50|min:3',
+            'description' => 'min:10'
+        ];
+    }
+
+    private function validateMessages(){
+        return [
+            'name.required' => 'Il campo nome è obbligatorio',
+            'name.max' => 'Il campo nome deve avere al massimo :max caratteri',
+            'name.min' => 'Il campo nome deve avere minimo :min caratteri',
+            'image.required' => 'Il campo Url immaigne è obbligatorio',
+            'image.max' => 'Il campo Url immaigne deve avere al massimo :max caratteri',
+            'image.min' => 'Il campo Url immaigne deve avere minimo :min caratteri',
+            'type.required' => 'Il campo tipo nome è obbligatorio',
+            'type.max' => 'Il campo tipo deve avere al massimo :max caratteri',
+            'type.min' => 'Il campo tipo deve avere minimo :min caratteri',
+            'description.min' => 'Il descrizione nome deve avere minimo :min caratteri',
+        ];
     }
 
 }
